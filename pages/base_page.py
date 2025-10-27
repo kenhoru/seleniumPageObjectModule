@@ -3,6 +3,7 @@ from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 import math
 import time
 
@@ -21,9 +22,6 @@ class BasePage():
         return True
 
     def is_not_element_present(self, how, what, timeout=4):
-        """
-        Проверяет, что элемент не появляется на странице в течение заданного времени
-        """
         try:
             WebDriverWait(self.browser, timeout).until(
                 EC.presence_of_element_located((how, what))
@@ -33,9 +31,6 @@ class BasePage():
         return False
 
     def is_disappeared(self, how, what, timeout=4):
-        """
-        Проверяет, что элемент исчезает в течение заданного времени
-        """
         end_time = time.time() + timeout
         while time.time() < end_time:
             if not self.is_element_present(how, what):
@@ -45,6 +40,12 @@ class BasePage():
 
     def open(self):
         self.browser.get(self.url)
+
+    def go_to_basket_page(self):
+        # Метод для перехода в корзину
+        basket_link = self.browser.find_element(
+            By.CSS_SELECTOR, ".basket-mini a.btn")
+        basket_link.click()
 
     def solve_quiz_and_get_code(self):
         alert = self.browser.switch_to.alert
